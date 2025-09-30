@@ -22,7 +22,7 @@ def invoke_model( prompt: str, system: str) -> str:
             }],
             system = [{"text" : system}],
             inferenceConfig = {
-                "maxTokens": 100,
+                "maxTokens": 150,
                 "temperature": 0.0,
             }
         )
@@ -62,6 +62,22 @@ def confirmarHora(hora, fecha, disponibilidad):
     
     print(f"La hora {hora} no está disponible para la fecha {fecha}.")
     return False
+
+
+def parsearFechaHora(input, state):
+    input = input.replace("```", '').replace("json", '').strip()
+    print("pasando por parser" + input)
+    try:
+        data = json.loads(input)
+        state["fecha"] = data.get("fecha")
+        state["hora"] = data.get("hora")
+
+    except json.JSONDecodeError:
+        state["fecha"] = "error"
+        state["hora"] = "error"
+
+    return state
+
 
 def generar_json_disponibilidad():
     """
