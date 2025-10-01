@@ -7,7 +7,7 @@ from prompts import *
 def enrutadorConsultarDisponibilidad (state : AgentState) -> str :
     """ Nodo para consultar la disponibilidad de citas luego de haber detectado intencion
     de preguntar una fecha u hora especifica'"""
-    goTo = invoke_model( state["historial"], promptEnrutadorConsultarDisponibilidad)
+    goTo = invoke_model( "\n".join(state["historial"]), promptEnrutadorConsultarDisponibilidad)
     
     if goTo == "PedirFecha":
         return "goTo_PedirFecha"

@@ -1,10 +1,28 @@
 promptInicio = """
+<instructions>
 Eres un asistente que detecta la intencion del usuario. 
 Responde con una sola palabra que sea la intencion principal del usuario.
+</instructions>
+<resctrictions>
 Las intenciones posibles son: 'PedirNombre' si el usuario quiere dar su nombre, 'PedirFecha' si el usuario quiere dar una fecha para agendar una cita, 
-'Finalizar' si el usuario quiere terminar la conversación, 'ConsultarDisponibilidad' si el usuario quiere consultar la disponibilidad de citas.
+'Finalizar' si el usuario quiere terminar la conversación, 'ConsultarDisponibilidad' si el usuario quiere consultar la disponibilidad de citas,
+'Cancelar' si el usuario quiere cancelar una cita.
 Si no entiendes la intencion responde 'Finalizar'.
+</resctrictions>
+<response_format>
 Solo responde con la intencion, no des explicaciones.
+</response_format>
+<examples>
+Usuario : Hola me gustaria agendar una cita para el 6 de octubre de a las 10am
+Asistente : PedirFecha
+
+Usuario : Hola, quisiera saber si hay citas disponibles el 3 de octubre a las 10 de la mañana.
+Asistente : ConsultarDisponibilidad
+</examples>
+
+
+
+
 """
 
 promptObtenerFecha = """
@@ -79,6 +97,7 @@ o al de consulta disponibilidad o al de finalizar.
 </context>
 <response_format>
 Responde únicamente con una de las siguientes opciones: 'Confirmar', 'PedirFecha', 'Finalizar'.
+Respuesta de ejemplo: 'PedirFecha'
 </response_format>
 <examples>
 # --- CASO 1: El usuario elige un horario y quiere CONFIRMAR ---
@@ -128,6 +147,9 @@ Asistente: Finalizar
 Usuario: Sí, por favor.
 Asistente: Confirmar
 </examples>
+<negativePrompting>
+No respondas con un "Asistente:" eso solo es para ejemplificar tu solo responde con el contenido
+</negativePrompting>
 """
 
 promptObtenerHora = """ 
@@ -151,6 +173,54 @@ Asistente: 09:00
 Usuario: No tengo una hora específica en mente.
 Asistente: error
 </examples>
+"""
+
+promptCancelar = """
+<instructions>
+Tu tarea es extraer la fecha y la hora de una intención de usuario de cancelar una cita.
+</instructions>
+<context>
+El mes actual es octubre de 2025.
+</context>
+
+<response_format>
+Responde únicamente con un objeto JSON válido que contenga las claves "fecha" y "hora".
+- La fecha debe estar en formato "YYYY-MM-DD".
+- La hora debe estar en formato "HH:MM" (24 horas).
+Si no encuentras una fecha o una hora válida en el texto, el valor correspondiente en el JSON debe ser la palabra "error".
+</response_format>
+
+<restrictions>
+No incluyas ninguna explicación o texto adicional fuera del objeto JSON.
+No aceptes fechas ambiguas o fuera del rango disponible (2025-09-30 a 2025-10-14, excluyendo sábados y domingos).
+</restrictions>
+
+<examples>
+Usuario: Hola, quiero cancelar mi cita del 5 de octubre a las 3 de la tarde.
+Asistente: {
+    "fecha": "2025-10-05",
+    "hora": "15:00"
+}
+
+Usuario: Necesito cancelar la cita que agendé.
+Asistente: {
+    "fecha": "error",
+    "hora": "error"
+}
+
+Usuario: Quiero cancelar la cita de mañana a las 10am.
+Asistente: {
+    "fecha": "error",
+    "hora": "error"
+}
+
+Usuario: Me gustaría cancelar mi cita del 8 de octubre.
+Asistente: {
+    "fecha": "2025-10-08",
+    "hora": "error"
+}
+</examples>
+
 """
 
 """

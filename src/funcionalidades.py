@@ -80,6 +80,53 @@ def parsearFechaHora(input, state):
     return state
 
 
+def cargar_disponibilidad(ruta_archivo="disponibilidad.json"):
+    """Carga los datos de disponibilidad desde un archivo JSON.
+    Usa disponibilidadTotal() para evitar duplicación de código."""
+    return disponibilidadTotal()
+
+def guardar_disponibilidad(datos, ruta_archivo="disponibilidad.json"):
+    """Guarda los datos de disponibilidad en un archivo JSON."""
+    with open(ruta_archivo, 'w', encoding='utf-8') as archivo:
+        json.dump(datos, archivo, ensure_ascii=False, indent=4)
+
+def setearDisponibilidad(fecha, hora, disponible: bool, disponibilidad):
+    """Modifica la disponibilidad en memoria. Retorna True si tuvo éxito."""
+    if fecha in disponibilidad:
+        horarios_del_dia = disponibilidad[fecha]
+        # Buscar el horario específico en la lista
+        for horario_obj in horarios_del_dia:
+            if horario_obj.get('hora') == hora:
+                horario_obj['disponible'] = disponible
+                return True
+    return False
+
+# --- La nueva función "orquestadora" que lo hace todo ---
+def actualizar_y_guardar_disponibilidad(fecha: str, hora: str, disponible: bool, ruta_archivo="disponibilidad.json"):
+    """
+    Función de alto nivel que orquesta el ciclo completo:
+    1. Carga los datos del JSON.
+    2. Intenta modificar la disponibilidad.
+    3. Si tiene éxito, guarda los cambios de vuelta en el JSON.
+    Retorna True si el cambio fue guardado, False en caso contrario.
+    """
+    # Paso 1: Leer
+    disponibilidad_actual = cargar_disponibilidad(ruta_archivo)
+    
+    # Paso 2: Modificar
+    exito_modificacion = setearDisponibilidad(fecha, hora, disponible, disponibilidad_actual)
+    
+    # Paso 3: Escribir (solo si hubo cambios)
+    if exito_modificacion:
+        guardar_disponibilidad(disponibilidad_actual, ruta_archivo)
+        #print(f"Cambio guardado en {ruta_archivo}: {fecha} a las {hora} ahora está {'disponible' if disponible else 'no disponible'}.")
+        return True
+    else:
+        #print(f"No se pudo actualizar: El horario {fecha} a las {hora} no fue encontrado.")
+        return False
+
+
+
 def generar_json_disponibilidad():
     """
     Genera un archivo JSON con la disponibilidad para las próximas 2 semanas,
@@ -136,4 +183,5 @@ def generar_json_disponibilidad():
 if __name__ == "__main__":
     #generar_json_disponibilidad()
     #disponibilidadTotal()
-    print(obtener_horarios_disponibles("2025-10-02", disponibilidadTotal()))
+    #print(obtener_horarios_disponibles("2025-10-02", disponibilidadTotal()))
+    actualizar_y_guardar_disponibilidad("2025-10-02", "16:00", True, "disponibilidad.json")

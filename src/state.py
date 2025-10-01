@@ -5,6 +5,6 @@ class AgentState(TypedDict):
     nombre : str | None
     fecha : str | None
     hora : str | None
-    historial : str
+    historial : list[str]
     cita_valida : bool
     error : bool

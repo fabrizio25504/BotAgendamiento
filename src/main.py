@@ -29,6 +29,7 @@ graph.add_node("Finalizar", finalizar)
 graph.add_node("Confirmar", confirmar)
 graph.add_node("ConsultarDisponibilidad", consultarDisponibilidad)
 graph.add_node("PrepararConfirmacion", prepararConfirmacion)
+graph.add_node("Cancelar", cancelar)
 
 ### añadir transiciones entre nodos
 
@@ -40,7 +41,8 @@ graph.add_conditional_edges(
         "goTo_PedirNombre": "PedirNombre",
         "goTo_PedirFecha": "PedirFecha",
         "goTo_Finalizar": "Finalizar",
-        "goTo_ConsultarDisponibilidad": "ConsultarDisponibilidad"
+        "goTo_ConsultarDisponibilidad": "ConsultarDisponibilidad",
+        "goTo_Cancelar": "Cancelar"
     }
 )
 graph.add_conditional_edges(
@@ -67,7 +69,7 @@ graph.add_conditional_edges(
     enrutadorConfirmacion,
     {
         "goTo_Finalizar": "Finalizar",
-        #"goTo_Cancelar": "Cancelar"
+        "goTo_Cancelar": "Cancelar",
         "goTo_PedirFecha": "PedirFecha"
     }
 )
@@ -90,7 +92,7 @@ graph.add_conditional_edges(
         "goTo_Confirmar": "Confirmar",
     }
                             )
-
+graph.add_edge("Cancelar",END)
 graph.add_edge("Finalizar",END)
 
 app = graph.compile()
