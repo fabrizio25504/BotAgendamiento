@@ -35,21 +35,22 @@ def invoke_model( prompt: str, system: str) -> str:
 def disponibilidadTotal() :
     with open('disponibilidad.json', 'r', encoding='utf-8') as f:
         jsonFormated = json.load(f)
-        print(jsonFormated)
+        #print(jsonFormated)
         return jsonFormated
     
-def confirmarDisponibilidad(fecha, disponibilidad):
-    fechas_disponibles = disponibilidad.get(fecha)
-    horas_disponibles = [item for item in fechas_disponibles if item['disponible']]
-    
-    if horas_disponibles:
-        print(f"Las horas disponibles para {fecha} son:")
-        for hora in horas_disponibles:
-            print(f"- {hora['hora']}")
-    else:
-        print(f"No hay horas disponibles para {fecha}.")
-    
-    return horas_disponibles
+def obtener_horarios_disponibles(fecha: str, disponibilidad_total: dict) -> list[str]:
+    """
+    Busca en el diccionario de disponibilidad y devuelve una lista con las HORAS disponibles.
+    Responsabilidad: Procesar datos. Es el "Chef".
+    """
+    horarios_del_dia = disponibilidad_total.get(fecha, [])
+    print("horarios del dia : ", horarios_del_dia)
+    # Devuelve una lista simple de strings con las horas, ej: ["10:00", "11:00"]
+    horas_libres = [
+        item["hora"] for item in horarios_del_dia if item.get("disponible")
+    ]
+    print("horas libres : ", horas_libres)
+    return horas_libres
 
 def confirmarHora(hora, fecha, disponibilidad):
     fechas_disponibles = disponibilidad.get(fecha)
@@ -135,4 +136,4 @@ def generar_json_disponibilidad():
 if __name__ == "__main__":
     #generar_json_disponibilidad()
     #disponibilidadTotal()
-    confirmarDisponibilidad("2025-10-02", disponibilidadTotal())
+    print(obtener_horarios_disponibles("2025-10-02", disponibilidadTotal()))

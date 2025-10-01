@@ -7,3 +7,4 @@ class AgentState(TypedDict):
     hora : str | None
     historial : str
     cita_valida : bool
+    error : bool
