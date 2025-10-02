@@ -35,7 +35,7 @@ Esta generado con **mermaid**
 
 Y tambien esta el diagrama hecho con **draw.io**
 
-el el archivo [pruebaTecnicaMaquinaDeEstados.io]
+en el archivo [/diagrams/pruebaTecnicaMaquinaDeEstados.jpg]
 
 ## 🚀 Instalación y Ejecución
 
@@ -77,35 +77,14 @@ Ejecuta el bot:
 
 Una vez ejecutado, el bot te saludará. A continuación, se muestran algunos ejemplos de interacción.
 
-Flujo 1: Agendamiento Directo
 
-    Usuario: Hola, quiero una cita para el 6 de octubre a las 3 de la tarde.
+[Flujos conversacionales.pdf](https://github.com/user-attachments/files/22665471/Flujos.conversacionales.pdf)
 
-    Bot: (Detecta fecha y hora, verifica disponibilidad) ¡Sí, ese horario está disponible! ¿Deseas pasar a la confirmacion?
-
-    Usuario: Sí, por favor.
-
-    Bot: (Pasa por el nodo confirmar) Perfecto. ¿Confirmo tu cita para el 2025-10-06 a las 15:00?
-
-    Usuario: Correcto.
-
-    Bot: ¡Genial! Tu cita ha sido agendada.
-
-Flujo 2: Consulta de Disponibilidad
-
-    Usuario: ¿Qué horarios tienes para el viernes?
-
-    Bot: (Consulta el JSON) Para el 2025-10-03 las horas disponibles son: 14:00, 15:00, 16:00. ¿Te gustaría agendar en alguno de esos horarios? Por favor, indica la hora.
-
-    Usuario: 15:00
-
-    Bot: (Pasa por prepararConfirmacion y luego a confirmar) Perfecto. ¿Confirmo tu cita para el 2025-10-03 a las 15:00?
-
-    Usuario: Sí.
-
-    Bot: ¡Genial! Tu cita ha sido agendada.
-
-    📄 Para una lista completa y detallada de todos los casos de uso y flujos contemplados, por favor consulta la documentación en la carpeta /docs.
+## Futuras mejoras
+- Verificar más casos : Hay algunos casos que no contemple y simplemente el flujo se siento algo forzado o se termina como por ejemplo si quiero cancelar una fecha sin especificar la hora
+- Mejorar prompts : Algunos prompts faltan ser refinados con ejemplos esto por ejemplo si insertas una hora sin decir si es pm o am puede confundir al modelo y darte un error
+- Hacer algo con el nombre : Por falta de tiempo no pude implementar que las citas se agenden con el nombre que se pide durante el flujo pero si se marcan como ocupadas o desocupadas
+- Ampliar las fechas : actualmente solo se aceptan fechas entre el 30 de setiembre y el 13 de octubre pues todo esta basado en un JSON con esas fechas
 
 ## 📁 Estructura del Proyecto
 ```
