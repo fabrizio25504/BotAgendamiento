@@ -37,7 +37,7 @@ def pedirFecha(state : AgentState) -> AgentState:
     
     
     #print("estoy pasando por pedir fecha")
-    #print(state)
+    print(state)
     # Caso 1: Reintento después de error
 
     if state.get("hora") == "error" and state.get("fecha") != "error" and state.get("fecha") is not None:
