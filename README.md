@@ -27,6 +27,9 @@ Un bot conversacional construido con Python y LangGraph, capaz de gestionar el a
 
 ## 📊 Diagrama del Grafo
 
+- **Solo preguntar con fechas entre el 30 de setiembre y el 13 de octubre**
+- **Las posibles para citas son 09:00,10:00,11:00,12:00,14:00,15:00,16:00,17:00**
+
 El flujo lógico de la conversación se modela con el siguiente grafo de estados:
 
 <img width="784" height="496" alt="mi_grafo" src="https://github.com/user-attachments/assets/86c4a3e3-df62-405d-98b8-945260e9060a" />
