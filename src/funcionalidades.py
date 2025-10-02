@@ -67,7 +67,7 @@ def confirmarHora(hora, fecha, disponibilidad):
 
 def parsearFechaHora(input, state):
     input = input.replace("```", '').replace("json", '').strip()
-    print("pasando por parser" + input)
+    #print("pasando por parser" + input)
     try:
         data = json.loads(input)
         state["fecha"] = data.get("fecha")

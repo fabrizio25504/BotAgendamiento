@@ -156,7 +156,7 @@
         },
         {
             "hora": "14:00",
-            "disponible": true
+            "disponible": false
         },
         {
             "hora": "15:00",

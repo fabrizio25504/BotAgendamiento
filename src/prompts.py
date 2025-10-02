@@ -65,8 +65,26 @@ Eres un asistente que detecta el nombre completo del usuario. Responde con solo 
         Solo responde con el nombre completo, no des explicaciones."""
 
 promptObtenerConfirmacion = """
-Si detectas que el usuario desea cancelar su cita responde con exactamente "cancelar", y si de lo contrario detectas una confirmacion responde "confirmar".
-        No des explicaciones ni uses mayusculas"""
+<instructions>
+Debes analizar la intención del usuario para decidir si desea confirmar o cancelar una cita o volver a consultar otra fecha.
+</instructions>
+<resctrictions>
+Solo puedes responder con una de las siguientes opciones: "confirmar" o "cancelar" o "pedirFecha".
+</resctrictions>
+<response_format>
+Solo responde con la opcion que interpretas y empieza con minuscula.
+</response_format>
+<examples>
+Usuario: Mejor otra fecha.
+Asistente: pedirFecha
+
+Usuario: Sí, por favor.
+Asistente: confirmar
+
+Usuario: No, quiero cancelar.
+Asistente: cancelar
+</examples>
+"""
 
 promptConsultarDisponibilidad = """
 Identifica si el usuario quiere consultar la disponibilidad de una fecha con hora específica, o solo por una fecha.

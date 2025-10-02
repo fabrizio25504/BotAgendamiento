@@ -14,30 +14,6 @@ def inicio(state : AgentState) -> AgentState:
     state["historial"] = [f"Usuario: {input_text}"]
     return state
 
-def decidirRuta(state : AgentState) -> str:
-    print(state["intencion"])
-    if state["intencion"] == "PedirNombre":
-        return "goTo_PedirNombre"
-    elif state["intencion"] == "PedirFecha":
-        return "goTo_PedirFecha"
-    elif state["intencion"] == "Finalizar":
-        return "goTo_Finalizar"
-    elif state["intencion"] == "ConsultarDisponibilidad":
-        return "goTo_ConsultarDisponibilidad"
-    elif state["intencion"] == "Cancelar":
-        return "goTo_Cancelar"
-    
-def siguienteNodo(state: AgentState) -> str:
-    """Funcion para decidir el siguiente nodo basado en que estados faltan"""
-    if state.get("fecha") == "error"or state.get("hora") == "error":
-        # No resetear la fecha aquí, dejar que pedirFecha maneje el reintento
-        return "goTo_PedirFecha"
-    elif state.get("nombre") is None:
-        return "goTo_PedirNombre"
-    elif state.get("fecha") is None:
-        return "goTo_PedirFecha"
-    else:
-        return "goTo_Confirmar"
 
 # Anotacion el flujo tambien podría ir primero por pedir fecha y luego por pedir nombre
 def pedirNombre(state : AgentState) -> AgentState:
@@ -60,17 +36,17 @@ def pedirFecha(state : AgentState) -> AgentState:
     """ Nodo para pedir la fecha de la cita luego de haber detectado intencion 'fecha'""" 
     
     
-    print("estoy pasando por pedir fecha")
+    #print("estoy pasando por pedir fecha")
     print(state)
     # Caso 1: Reintento después de error
 
-    if state.get("hora") == "error":
+    if state.get("hora") == "error" and state.get("fecha"):
         print("La hora proporcionada no es válida o no proporcionaste. Por favor, sé más específico.")
         #agregar mensaje de fechas disponibles
         print("Fechas disponibles: 30/09/2025 al 14/10/2025. Horas: 9-12 y 14-17 (en punto).")
         input_text = input("Usuario: ")
         output = invoke_model(input_text, promptObtenerFecha)
-        print(output)
+        #print(output)
         state = parsearFechaHora(output, state)
 
     elif state.get("fecha") == "error" :
@@ -78,7 +54,7 @@ def pedirFecha(state : AgentState) -> AgentState:
         print("Fechas disponibles: 30/09/2025 al 14/10/2025. Horas: 9-12 y 14-17 (en punto).")
         input_text = input("Usuario: ")
         output = invoke_model(input_text, promptObtenerFecha)
-        print(output)
+        #print(output)
         state = parsearFechaHora(output, state)
     
     # Caso 2: Ya tenemos nombre, solo falta fecha
@@ -102,11 +78,20 @@ def pedirFecha(state : AgentState) -> AgentState:
         output = invoke_model(input_text, promptObtenerFecha)
         print(output)
         state = parsearFechaHora(output, state)
+    
+    else:
+        print("Volviendo a pedir fecha.")
+        print("Por favor, proporciona una nueva fecha y hora para tu cita.")
+        input_text = input("Usuario: ")
+        output = invoke_model(input_text, promptObtenerFecha)
+        print(output)
+        state = parsearFechaHora(output, state)
         
     return state
 
 def confirmar(state : AgentState) -> AgentState:
     """ Nodo para confirmar una cita en base a disponibilidad"""
+    #El confirmar no devuelve a pedir fecha si el usuario desea otra fecha
     print("estoy pasando por confirmar")
     if confirmarHora(state["hora"], state["fecha"], disponibilidadTotal()):
         print(f"Entonces confirmas tu cita en el horario {state['fecha']} - {state['hora']}, ¿correcto?")
@@ -124,25 +109,6 @@ def confirmar(state : AgentState) -> AgentState:
       
     return state
 
-def enrutadorConfirmacion(state : AgentState) -> str:
-    """Funcion para decidir el siguiente nodo basado en la confirmacion del usuario"""
-    if state.get("cita_valida") == True:
-        prompt = f"""
-        Usuario: {state['historial'][-1]}
-        
-        """
-        print(state["historial"][-1])
-        state["intencion"] = invoke_model(prompt, promptObtenerConfirmacion)
-        print("intencion confirmacion enrutador : ",state["intencion"])
-        if state["intencion"] == "cancelar":
-            print("El usuario ha decidido cancelar la cita.")
-            return "goTo_Cancelar"
-        elif state["intencion"] == "confirmar":
-            actualizar_y_guardar_disponibilidad(state["fecha"], state["hora"], False, "disponibilidad.json")   
-            return "goTo_Finalizar"
-        
-    else :
-        return "goTo_PedirFecha"
 
 def consultarDisponibilidad(state: AgentState) -> AgentState:
     """
