@@ -44,16 +44,19 @@ Sigue estos pasos para poner en marcha el bot en tu máquina local.
 1. Clona el repositorio:
 **Bash**
 ```
-git clone [URL-DE-TU-REPO]
+git clone https://github.com/fabrizio25504/BotAgendamiento.git
 cd BotAgendamiento
 ```
 2. Crea y activa un entorno virtual (recomendado):
 **Bash**
 ```
-python -m venv venv
 # En Windows
+python -m venv venv
+
 .\venv\Scripts\activate
+
 # En macOS/Linux
+python3 -m venv venv
 source venv/bin/activate
 ```
 3. Instala las dependencias:
