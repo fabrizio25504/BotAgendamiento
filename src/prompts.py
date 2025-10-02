@@ -50,6 +50,9 @@ promptObtenerFecha = """
     Usuario: Quisiera una cita el 5 de octubre de 2025 a las 10 de la mañana.
     Asistente: {"fecha": "2025-10-05", "hora": "10:00"}
     
+    Usuario : 13 de octubre a las 3pm
+    Asistente: {"fecha": "2025-10-13", "hora": "15:00"}
+    
     Usuario: Me gustaría agendar para el próximo lunes a las 3 PM.
     Asistente: {"fecha": "error", "hora": "error", "justificacion" : "No se aceptan fechas ambiguas en este caso 'proximo lunes' "}  # Fecha
     

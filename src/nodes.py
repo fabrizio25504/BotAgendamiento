@@ -21,7 +21,7 @@ def pedirNombre(state : AgentState) -> AgentState:
     
     #print("estoy pasando por pedir nombre")
     if state.get("fecha") is not None:
-        print("¿Cuál es tu nombre?")
+        print("¿Disculpa, Cuál es tu nombre?")
         input_text = input("Usuario: ")
         state["nombre"] = invoke_model( input_text, promptObtenerNombre)
         #state["intencion"] = "Finalizar"  # forzar a que la siguiente intencion sea finalizar
