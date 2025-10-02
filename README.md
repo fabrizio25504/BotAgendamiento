@@ -50,10 +50,13 @@ cd BotAgendamiento
 2. Crea y activa un entorno virtual (recomendado):
 **Bash**
 ```
-python -m venv venv
 # En Windows
+python -m venv venv
+
 .\venv\Scripts\activate
+
 # En macOS/Linux
+python3 -m venv venv
 source venv/bin/activate
 ```
 3. Instala las dependencias:
