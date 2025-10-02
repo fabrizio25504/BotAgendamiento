@@ -13,9 +13,6 @@ from enrutadores import *
 
 load_dotenv()
 
-api_key_name = "BedrockAPIKey-jw6j-at-994142413059"
-api_key = "ABSKQmVkcm9ja0FQSUtleS1qdzZqLWF0LTk5NDE0MjQxMzA1OTpEQTNRQUxVSnNweFgwRnlDOXpBcHdIMkU0WlBQOElnWU1aMVlxNFliUVdCZnlVb3VrbjVXMlhJdVR2dz0="
-#export AWS_BEARER_TOKEN_BEDROCK=ABSKQmVkcm9ja0FQSUtleS1qdzZqLWF0LTk5NDE0MjQxMzA1OTpEQTNRQUxVSnNweFgwRnlDOXpBcHdIMkU0WlBQOElnWU1aMVlxNFliUVdCZnlVb3VrbjVXMlhJdVR2dz0=
 
 
 graph  = StateGraph(AgentState)
