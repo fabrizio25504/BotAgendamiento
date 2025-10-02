@@ -53,12 +53,12 @@ def enrutadorConfirmacion(state : AgentState) -> str:
         """
         #print(state["historial"][-1])
         state["intencion"] = invoke_model(prompt, promptObtenerConfirmacion)
-        print("intencion confirmacion enrutador : ",state["intencion"])
+        #print("intencion confirmacion enrutador : ",state["intencion"])
         if state["intencion"] == "cancelar":
             print("El usuario ha decidido cancelar la cita.")
             return "goTo_Cancelar"
         elif state["intencion"] == "confirmar":
-            print("debuggin confirmar")
+            #print("debuggin confirmar")
             actualizar_y_guardar_disponibilidad(state["fecha"], state["hora"], False, "disponibilidad.json")   
             return "goTo_Finalizar"
         elif state["intencion"] == "pedirFecha":

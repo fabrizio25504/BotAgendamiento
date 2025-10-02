@@ -44,12 +44,12 @@ def obtener_horarios_disponibles(fecha: str, disponibilidad_total: dict) -> list
     Responsabilidad: Procesar datos. Es el "Chef".
     """
     horarios_del_dia = disponibilidad_total.get(fecha, [])
-    print("horarios del dia : ", horarios_del_dia)
+    #print("horarios del dia : ", horarios_del_dia)
     # Devuelve una lista simple de strings con las horas, ej: ["10:00", "11:00"]
     horas_libres = [
         item["hora"] for item in horarios_del_dia if item.get("disponible")
     ]
-    print("horas libres : ", horas_libres)
+    #print("horas libres : ", horas_libres)
     return horas_libres
 
 def confirmarHora(hora, fecha, disponibilidad):

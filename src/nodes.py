@@ -19,14 +19,14 @@ def inicio(state : AgentState) -> AgentState:
 def pedirNombre(state : AgentState) -> AgentState:
     """ Nodo para pedir el nombre del usuario luego de haber detectado intencion 'nombre'"""
     
-    print("estoy pasando por pedir nombre")
+    #print("estoy pasando por pedir nombre")
     if state.get("fecha") is not None:
         print("¿Cuál es tu nombre?")
         input_text = input("Usuario: ")
         state["nombre"] = invoke_model( input_text, promptObtenerNombre)
         #state["intencion"] = "Finalizar"  # forzar a que la siguiente intencion sea finalizar
     elif state.get("fecha") is None:
-        print("paso por el else de pedir nombre")
+        #print("paso por el else de pedir nombre")
         state["nombre"] = invoke_model( state["historial"][-1], promptObtenerNombre)
         #state["intencion"] = "PedirFecha"  # forzar a que la siguiente intencion sea pedir fecha
 
@@ -37,13 +37,15 @@ def pedirFecha(state : AgentState) -> AgentState:
     
     
     #print("estoy pasando por pedir fecha")
-    print(state)
+    #print(state)
     # Caso 1: Reintento después de error
 
     if state.get("hora") == "error" and state.get("fecha"):
-        print("La hora proporcionada no es válida o no proporcionaste. Por favor, sé más específico.")
+        print("La hora proporcionada no es válida o no proporcionaste. Vuelve a proporcionar la fecha y hora.")
         #agregar mensaje de fechas disponibles
         print("Fechas disponibles: 30/09/2025 al 14/10/2025. Horas: 9-12 y 14-17 (en punto).")
+        horarios_disponibles = "\n".join(obtener_horarios_disponibles(state['fecha'], disponibilidadTotal()))
+        print(f"los horarios disponibles del {state['fecha']} son: {horarios_disponibles}")
         input_text = input("Usuario: ")
         output = invoke_model(input_text, promptObtenerFecha)
         #print(output)
@@ -63,20 +65,20 @@ def pedirFecha(state : AgentState) -> AgentState:
         input_text = input("Usuario: ")
         state["fecha"] = invoke_model(input_text, promptObtenerFecha)
         output = invoke_model(input_text, promptObtenerFecha)
-        print(output)
+        #print(output)
         state = parsearFechaHora(output, state)
     
     # Caso 3: Tenemos fecha en historial, no tenemos nombre
     elif state.get("nombre") is None and state.get("fecha") is None:
         output = invoke_model(state["historial"][-1], promptObtenerFecha)
-        print(output)
+        #print(output)
         state = parsearFechaHora(output, state)
     
     elif state.get("cita_valida") == False:
         print("Por favor, proporciona una nueva fecha y hora para tu cita.")
         input_text = input("Usuario: ")
         output = invoke_model(input_text, promptObtenerFecha)
-        print(output)
+        #print(output)
         state = parsearFechaHora(output, state)
     
     else:
@@ -84,7 +86,7 @@ def pedirFecha(state : AgentState) -> AgentState:
         print("Por favor, proporciona una nueva fecha y hora para tu cita.")
         input_text = input("Usuario: ")
         output = invoke_model(input_text, promptObtenerFecha)
-        print(output)
+        #print(output)
         state = parsearFechaHora(output, state)
         
     return state
@@ -92,7 +94,7 @@ def pedirFecha(state : AgentState) -> AgentState:
 def confirmar(state : AgentState) -> AgentState:
     """ Nodo para confirmar una cita en base a disponibilidad"""
     #El confirmar no devuelve a pedir fecha si el usuario desea otra fecha
-    print("estoy pasando por confirmar")
+    #print("estoy pasando por confirmar")
     if confirmarHora(state["hora"], state["fecha"], disponibilidadTotal()):
         print(f"Entonces confirmas tu cita en el horario {state['fecha']} - {state['hora']}, ¿correcto?")
         state["cita_valida"] = True
@@ -117,12 +119,12 @@ def consultarDisponibilidad(state: AgentState) -> AgentState:
     """
     #print("estoy pasando por consultar disponibilidad")
     respuesta_str = invoke_model(state["historial"][-1], promptConsultarDisponibilidad).replace("```", '').replace("json", '').strip()
-    print("respuesta str : ", respuesta_str)
+    #print("respuesta str : ", respuesta_str)
     try :
         respuesta = json.loads(respuesta_str)
     except json.JSONDecodeError:
         respuesta = {"fecha": None, "hora": None}
-    print(respuesta)
+    #print(respuesta)
     fecha = respuesta.get("fecha")
     hora = respuesta.get("hora")
     
@@ -166,7 +168,7 @@ def consultarDisponibilidad(state: AgentState) -> AgentState:
             print("¿Te gustaría agendar en alguno de esos horarios? Por favor, indica la hora.")
             state["fecha"] = fecha
         else:
-            mensaje_bot= f"Lo siento, no me quedan horarios disponibles para el {fecha}. \n¿Te gustaría consultar otro día?"
+            mensaje_bot= f"Lo siento, no me quedan horarios disponibles para el {fecha}. \n¿Te gustaría consultar otro día? De ser así indica la fecha y hora"
             print(mensaje_bot)
             # AÑADIDO: Guardar ambos mensajes
             state["historial"].append(f"bot: {mensaje_bot}")
