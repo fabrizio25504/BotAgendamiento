@@ -1,3 +1,8 @@
+import datetime
+
+# Obtiene la fecha de hoy y la formatea como "AAAA-MM-DD"
+fecha_de_hoy = datetime.date.today().strftime("%Y-%m-%d")
+
 promptInicio = """
 <instructions>
 Eres un asistente que detecta la intencion del usuario. 
@@ -25,47 +30,61 @@ Asistente : ConsultarDisponibilidad
 
 """
 
-promptObtenerFecha = """
+promptObtenerFecha = f"""
 <contexto>
     El usuario está tratando de agendar una cita. Ahora necesita proporcionar una fecha para la cita. 
-    El mes actual es octubre de 2025.
+    La fecha actual es {fecha_de_hoy}.
     </contexto>
     <instrucciones>
-    Extrae la fecha y la hora del texto del usuario. La fecha debe estar en formato AAAA-MM-DD y la hora en formato HH:MM (24 horas).
-    Si el usuario proporciona una hora en AM o PM transformala a formato 24 horas.
-    Si la instrucción no contiene una fecha u hora válidas, o si falta alguna de las dos, en la clave correspondiente del JSON responde "error".
+    Tu principal objetivo es extraer una fecha y una hora del texto del usuario, que puede incluir un historial de conversación.
+    - La fecha debe estar en formato AAAA-MM-DD y la hora en formato HH:MM (24 horas).
+    - Si el usuario no menciona la fecha en su último mensaje, DEBES inferirla del contexto del historial que el bot ha proporcionado.
+    - Si el usuario proporciona una hora en AM o PM, transfórmala a formato 24 horas.
+    - Solo si es imposible determinar una fecha u hora válidas (ni por el mensaje del usuario ni por el contexto), debes usar "error".
     </instrucciones>
     <restricciones>
     Solo acepta fechas dentro de '2025-09-30' y '2025-10-13', que son las fechas disponibles sin contar los sabados y domingos.
     Y con las horas de 09:00 a 12:00 y de 14:00 a 17:00. Deben ser horas en punto.
-    No debes aceptar si la fecha es ambigua. Ejemplo: "el próximo lunes" o "el 5" son ambiguos.
+    No debes aceptar si la fecha es ambigua. Ejemplo: "Lunes o tal vez jueves?" o "Que fecha me recomiendas?" son ambiguos.
     </restricciones>
     <response format>
     Responde únicamente con un objeto JSON válido que contenga las claves "fecha" y "hora". 
     Y en caso de error coloca "justificacion" como clave y como valor la justificación.
     Ejemplo de formato de respuesta:
-    {"fecha": "AAAA-MM-DD", "hora": "HH:MM"}
+    {{"fecha": "AAAA-MM-DD", "hora": "HH:MM"}}
     </response format>
     <examples>
-    Usuario: Quisiera una cita el 5 de octubre de 2025 a las 10 de la mañana.
-    Asistente: {"fecha": "2025-10-05", "hora": "10:00"}
+    Usuario: Quisiera una cita el 5 de octubre de 2025 a las 3.
+    Asistente: {{"fecha": "2025-10-05", "hora": "15:00"}}
+
+    Usuario: 13 de octubre a las 3pm
+    Asistente: {{"fecha": "2025-10-13", "hora": "15:00"}}
+
+    # Lógica: Si {fecha_de_hoy} es "AAAA-MM-DD", 'proxima' es "AAAA-MM-DD+7".
+    Usuario: Me gustaría agendar para la proxima semana a las 3 PM.
+    Asistente: {{"fecha": "Fecha_de_hoy+7", "hora": "15:00"}}
+
+    Usuario: Quiero una cita el 20 de diciembre.
+    Asistente: {{"fecha": "error", "hora": "error", "justificacion": "La fecha '20 de diciembre' está fuera del rango de agendamiento permitido."}}
+
+    bot: Para el 2025-10-07 las horas disponibles son: 09:00, 10:00, 11:00.
+    Usuario: Me gustaría agendar a las 11 entonces.
+    Asistente: {{"fecha": "2025-10-07", "hora": "11:00"}}
     
-    Usuario : 13 de octubre a las 3pm
-    Asistente: {"fecha": "2025-10-13", "hora": "15:00"}
+    Usuario : una cita el 5
+    Asistente : {{"fecha": "2025-10-05", "hora": "error", "justificacion": "Hay fecha pero no hora."}}
     
-    Usuario: Me gustaría agendar para el próximo lunes a las 3 PM.
-    Asistente: {"fecha": "error", "hora": "error", "justificacion" : "No se aceptan fechas ambiguas en este caso 'proximo lunes' "}  # Fecha
-    
-    Usuario : Quisiera una cita el 10 de octubre de 2025 a las 2pm.
-    Asistente: {"fecha": "2025-10-10", "hora": "14:00"}
+    Usuario : Hmmm no se que día elegir te parece jueves o viernes?
+    Asistente : {{"fecha": "error", "hora": "error", "justificacion": "La fecha 'jueves o viernes' es ambigua y no se puede procesar."}}
     </examples>
     
 """
 
 promptObtenerNombre = """
-Eres un asistente que detecta el nombre completo del usuario. Responde con solo el nombre completo del usuario.
-        Es posible que el usuario te de más texto a parte del nombre.
-        Solo responde con el nombre completo, no des explicaciones."""
+Intruccion : Eres un asistente que detecta el nombre completo del usuario.
+Formato de respuesta : Responde con solo el nombre completo del usuario.
+Contexto : Es posible que el usuario te de más texto a parte del nombre.
+Restricciones : Solo responde con el nombre completo, no des explicaciones."""
 
 promptObtenerConfirmacion = """
 <instructions>
@@ -89,22 +108,26 @@ Asistente: cancelar
 </examples>
 """
 
-promptConsultarDisponibilidad = """
+promptConsultarDisponibilidad = f"""
 Identifica si el usuario quiere consultar la disponibilidad de una fecha con hora específica, o solo por una fecha.
 <contexto>
 Eres un bot que detecta la intencion del usuario para consultar disponibilidad. 
-Estamos en 2025 y el mes actual es octubre.
+la fecha actual es {fecha_de_hoy}.
 Responde únicamente con un objeto JSON válido.
 </contexto>
 <output_format>
-El JSON debe tener la estructura: {"fecha": "AAAA-MM-DD", "hora": "HH:MM" o null}
+El JSON debe tener la estructura: {{"fecha": "AAAA-MM-DD", "hora": "HH:MM" o null}}
 La clave "hora" debe estar siempre presente. Si el usuario no especifica una hora, su valor debe ser null.
 </output_format>
 <examples>
 Usuario: Quisiera saber si hay citas disponibles el 3 de octubre de 2025 a las 10 de la mañana.
-Asistente: {"fecha": "2025-10-03", "hora": "10:00"}
+Asistente: {{"fecha": "2025-10-03", "hora": "10:00"}}
+
 Usuario: Me gustaría saber si hay citas disponibles el 7 de octubre de 2025.
-Asistente: {"fecha": "2025-10-07", "hora": null}
+Asistente: {{"fecha": "2025-10-07", "hora": null}}
+
+Usuario: Me gustaría saber si hay citas para mañana a las 4.
+Asistente: {{"fecha": "2025-10-07", "hora": "16:00"}}
 </examples>
 """
 
@@ -130,6 +153,9 @@ Asistente: Confirmar
 Usuario: La de las 3 de la tarde está perfecta.
 Asistente: Confirmar
 
+Usuario: La de las 5 me gustaria.
+Asistente: Confirmar
+
 Usuario: 15:00
 Asistente: Confirmar
 
@@ -140,6 +166,9 @@ Usuario: Sí, por favor, busca para el lunes.
 Asistente: PedirFecha
 
 Usuario: Dale, y el martes?
+Asistente: PedirFecha
+
+Usuario: y para el siguiente viernes a las 5.
 Asistente: PedirFecha
 
 # El bot acaba de decir: "Para el viernes tengo libre: 10:00, 15:00. Elige una hora o di 'otro día'."
@@ -161,6 +190,7 @@ Asistente: Finalizar
 
 Usuario: No, está bien así. Adiós.
 Asistente: Finalizar
+
 
 # --- CASO 4: El usuario confirma ---
 # el bot acaba de decir : ¡Sí, ese horario está disponible! ¿Deseas pasar a la confirmacion?
@@ -196,52 +226,68 @@ Asistente: error
 </examples>
 """
 
-promptCancelar = """
-<instructions>
+promptCancelar = f"""<instructions>
 Tu tarea es extraer la fecha y la hora de una intención de usuario de cancelar una cita.
+Usa la 'fecha_actual' del contexto como referencia para resolver fechas relativas como 'mañana', 'el próximo lunes', etc.
 </instructions>
-<context>
-El mes actual es octubre de 2025.
-</context>
+
+<contexto>
+La fecha actual es: {fecha_de_hoy}
+</contexto>
 
 <response_format>
-Responde únicamente con un objeto JSON válido que contenga las claves "fecha" y "hora".
+Responde únicamente con un objeto JSON válido que contenga las claves "fecha", "hora" y opcionalmente "justificacion".
 - La fecha debe estar en formato "YYYY-MM-DD".
 - La hora debe estar en formato "HH:MM" (24 horas).
-Si no encuentras una fecha o una hora válida en el texto, el valor correspondiente en el JSON debe ser la palabra "error".
+Si no encuentras una fecha o una hora válida, el valor correspondiente debe ser la palabra "error".
 </response_format>
 
-<restrictions>
-No incluyas ninguna explicación o texto adicional fuera del objeto JSON.
-No aceptes fechas ambiguas o fuera del rango disponible (2025-09-30 a 2025-10-14, excluyendo sábados y domingos).
-</restrictions>
+<restricciones>
+- No incluyas ninguna explicación o texto adicional fuera del objeto JSON.
+- Debes resolver fechas relativas. Si una fecha sigue siendo demasiado ambigua (ej. "el 5"), responde con un error y una justificación.
+</restricciones>
 
 <examples>
+# --- Ejemplo con fecha y hora explícitas (no relativo) ---
 Usuario: Hola, quiero cancelar mi cita del 5 de octubre a las 3 de la tarde.
-Asistente: {
+Asistente: {{
     "fecha": "2025-10-05",
     "hora": "15:00"
-}
+}}
 
+# --- Ejemplo sin información suficiente ---
 Usuario: Necesito cancelar la cita que agendé.
-Asistente: {
+Asistente: {{
     "fecha": "error",
-    "hora": "error"
-}
+    "hora": "error",
+    "justificacion": "No se especificó ninguna fecha u hora para la cancelación."
+}}
 
+# --- Ejemplo con 'mañana' (relativo a la fecha actual) ---
+# Lógica: Si {fecha_de_hoy} es "AAAA-MM-DD", 'mañana' es "AAAA-MM-DD+1".
 Usuario: Quiero cancelar la cita de mañana a las 10am.
-Asistente: {
+Asistente: {{
+    "fecha": "{{fecha_de_hoy_mas_1_dia}}",
+    "hora": "10:00"
+}}
+
+# --- Ejemplo con 'próximo [día]' (relativo a la fecha actual) ---
+# Lógica: Si {fecha_de_hoy} es un Jueves, 'próximo martes' es el siguiente martes en el calendario.
+Usuario: Necesito cancelar mi cita del próximo martes.
+Asistente: {{
+    "fecha": "{{fecha_del_proximo_martes}}",
+    "hora": "error",
+    "justificacion": "Se encontró una fecha pero no se especificó la hora."
+}}
+
+# --- Ejemplo con fecha ambigua ---
+Usuario: Quiero cancelar la del 5.
+Asistente: {{
     "fecha": "error",
-    "hora": "error"
-}
-
-Usuario: Me gustaría cancelar mi cita del 8 de octubre.
-Asistente: {
-    "fecha": "2025-10-08",
-    "hora": "error"
-}
+    "hora": "error",
+    "justificacion": "La fecha 'el 5' es ambigua porque no especifica el mes."
+}}
 </examples>
-
 """
 
 """

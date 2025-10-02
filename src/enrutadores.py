@@ -8,6 +8,8 @@ def enrutadorConsultarDisponibilidad (state : AgentState) -> str :
     """ Nodo para consultar la disponibilidad de citas luego de haber detectado intencion
     de preguntar una fecha u hora especifica'"""
     goTo = invoke_model( "\n".join(state["historial"]), promptEnrutadorConsultarDisponibilidad)
+    #print(f"Historial de conversación:\n{'\n'.join(state['historial'])}")
+    #print(goTo)
     
     if goTo == "PedirFecha":
         return "goTo_PedirFecha"
@@ -20,7 +22,7 @@ def enrutadorConsultarDisponibilidad (state : AgentState) -> str :
         return "goTo_Finalizar"  
     
 def decidirRuta(state : AgentState) -> str:
-    print(state["intencion"])
+    #print(state["intencion"])
     if state["intencion"] == "PedirNombre":
         return "goTo_PedirNombre"
     elif state["intencion"] == "PedirFecha":
