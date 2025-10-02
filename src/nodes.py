@@ -50,7 +50,7 @@ def pedirFecha(state : AgentState) -> AgentState:
         input_text = input("Usuario: ")
         state["historial"].append(f" Usuario: {input_text}")
         print(state["historial"][-2]+state["historial"][-1])
-        output = invoke_model(state["historial"][-2]+state["historial"][-1], promptObtenerFecha)
+        output = invoke_model(state["historial"][-2]+state["historial"][-1], promptObtenerFecha).replace("Asistente:", "").strip()
         #output = invoke_model(input_text, promptObtenerFecha)
         #print(output)
         state = parsearFechaHora(output, state)
@@ -59,7 +59,7 @@ def pedirFecha(state : AgentState) -> AgentState:
         print("- La fecha u hora proporcionada no es válida. Por favor, sé más específico.")
         print("- Fechas disponibles: 30/09/2025 al 14/10/2025. Horas: 9-12 y 14-17 .")
         input_text = input("Usuario: ")
-        output = invoke_model(input_text, promptObtenerFecha)
+        output = invoke_model(input_text, promptObtenerFecha).replace("Asistente:", "").strip()
         #print(output)
         state = parsearFechaHora(output, state)
     
@@ -67,21 +67,21 @@ def pedirFecha(state : AgentState) -> AgentState:
     elif state.get("nombre") is not None and state.get("fecha") is None:
         print("- ¿Qué fecha prefieres para tu cita?")
         input_text = input("Usuario: ")
-        state["fecha"] = invoke_model(input_text, promptObtenerFecha)
+        state["fecha"] = invoke_model(input_text, promptObtenerFecha).replace("Asistente:", "").strip()
         output = invoke_model(input_text, promptObtenerFecha)
         #print(output)
         state = parsearFechaHora(output, state)
     
     # Caso 3: Tenemos fecha en historial, no tenemos nombre
     elif state.get("nombre") is None and state.get("fecha") is None:
-        output = invoke_model(state["historial"][-1], promptObtenerFecha)
+        output = invoke_model(state["historial"][-1], promptObtenerFecha).replace("Asistente:", "").strip()
         #print(output)
         state = parsearFechaHora(output, state)
     
     elif state.get("cita_valida") == False:
         print("- Por favor, proporciona una nueva fecha y hora para tu cita.")
         input_text = input("Usuario: ")
-        output = invoke_model(input_text, promptObtenerFecha)
+        output = invoke_model(input_text, promptObtenerFecha).replace("Asistente:", "").strip()
         #print(output)
         state = parsearFechaHora(output, state)
     
@@ -90,7 +90,7 @@ def pedirFecha(state : AgentState) -> AgentState:
         print("- Por favor, proporciona una nueva fecha y hora para tu cita.")
         input_text = input("Usuario: ")
         state["historial"].append(f" Usuario: {input_text}")
-        output = invoke_model(state["historial"][-2]+state["historial"][-1], promptObtenerFecha)
+        output = invoke_model(state["historial"][-2]+state["historial"][-1], promptObtenerFecha).replace("Asistente:", "").strip()
         #print(output)
         state = parsearFechaHora(output, state)
         
