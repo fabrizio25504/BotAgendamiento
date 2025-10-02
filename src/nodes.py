@@ -40,10 +40,10 @@ def pedirFecha(state : AgentState) -> AgentState:
     #print(state)
     # Caso 1: Reintento después de error
 
-    if state.get("hora") == "error" and state.get("fecha"):
+    if state.get("hora") == "error" and state.get("fecha") != "error" and state.get("fecha") is not None:
         print("La hora proporcionada no es válida o no proporcionaste. Vuelve a proporcionar la fecha y hora.")
         #agregar mensaje de fechas disponibles
-        print("Fechas disponibles: 30/09/2025 al 14/10/2025. Horas: 9-12 y 14-17 (en punto).")
+        print("Fechas disponibles: 30/09/2025 al 13/10/2025. Horas: 9-12 y 14-17 (en punto).")
         horarios_disponibles = "\n".join(obtener_horarios_disponibles(state['fecha'], disponibilidadTotal()))
         print(f"los horarios disponibles del {state['fecha']} son: {horarios_disponibles}")
         input_text = input("Usuario: ")

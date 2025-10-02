@@ -54,6 +54,7 @@ def obtener_horarios_disponibles(fecha: str, disponibilidad_total: dict) -> list
 
 def confirmarHora(hora, fecha, disponibilidad):
     fechas_disponibles = disponibilidad.get(fecha)
+    
     horas_disponibles = [item for item in fechas_disponibles if item['disponible']]
     
     for item in horas_disponibles:

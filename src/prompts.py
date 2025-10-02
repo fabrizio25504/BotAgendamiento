@@ -36,7 +36,7 @@ promptObtenerFecha = """
     Si la instrucción no contiene una fecha u hora válidas, o si falta alguna de las dos, en la clave correspondiente del JSON responde "error".
     </instrucciones>
     <restricciones>
-    Solo acepta fechas dentro de '2025-09-30' y '2025-10-14', que son las fechas disponibles sin contar los sabados y domingos.
+    Solo acepta fechas dentro de '2025-09-30' y '2025-10-13', que son las fechas disponibles sin contar los sabados y domingos.
     Y con las horas de 09:00 a 12:00 y de 14:00 a 17:00. Deben ser horas en punto.
     No debes aceptar si la fecha es ambigua. Ejemplo: "el próximo lunes" o "el 5" son ambiguos.
     </restricciones>
