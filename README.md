@@ -79,9 +79,7 @@ Ejecuta el bot:
 ## 💬 Uso y Flujos de Conversación
 
 Una vez ejecutado, el bot te saludará. A continuación, se muestran algunos ejemplos de interacción.
-
-
-[Flujos conversacionales.pdf](https://github.com/user-attachments/files/22665471/Flujos.conversacionales.pdf)
+[Flujos conversacionales.pdf](https://github.com/user-attachments/files/22667337/Flujos.conversacionales.pdf)
 
 ## Futuras mejoras
 - Verificar más casos : Hay algunos casos que no contemple y simplemente el flujo se siento algo forzado o se termina como por ejemplo si quiero cancelar una fecha sin especificar la hora
